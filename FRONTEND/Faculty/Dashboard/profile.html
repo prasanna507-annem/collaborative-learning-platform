@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .profile-container {
+            width: 60%; /* Adjust width as needed */
+            max-width: 800px; /* Set a max width */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto; /* Centers the div with equal spacing */
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-header h1 {
+            margin: 0;
+        }
+
+        .profile-header button {
+            background-color: #f7941d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .profile-header button.logout {
+            background-color: #f7941d;
+            margin-left: 10px;
+        }
+
+        .profile-image {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-image input {
+            margin-top: 10px;
+        }
+
+        .profile-info {
+            margin-bottom: 15px;
+        }
+
+        .profile-info label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .profile-info input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .profile-info input:disabled {
+            background-color: #fff;
+            border: none;
+            padding: 0;
+        }
+
+        .save-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .save-button button {
+            background-color: #f7941d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Profile</h1>
+            <button id="edit-button">Edit</button>
+            <button class="logout">Logout</button>
+        </div>
+
+        <div class="profile-image">
+            <img id="profile-pic" src="placeholder.jpg" alt="Profile Picture">
+            <input type="file" id="image-upload">
+        </div>
+
+        <div class="profile-info">
+            <label>Name:</label>
+            <input type="text" id="name" disabled>
+        </div>
+        <div class="profile-info">
+            <label>Email:</label>
+            <input type="email" id="email" disabled>
+        </div>
+        <div class="profile-info">
+            <label>Phone:</label>
+            <input type="tel" id="phone" disabled>
+        </div>
+        <div class="profile-info">
+            <label>Address:</label>
+            <input type="text" id="address" disabled>
+        </div>
+
+        <button id="save-button" style="display: none;">Save</button>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let profileImageBase64 = "";
+
+        // Preview Image Before Upload
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('profile-pic').src = reader.result;
+                profileImageBase64 = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Toggle Edit Mode
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            document.querySelectorAll('.profile-info input').forEach(input => input.disabled = !isEditMode);
+            document.getElementById('image-upload').disabled = !isEditMode;
+            document.getElementById('save-button').style.display = isEditMode ? 'block' : 'none';
+            document.getElementById('edit-button').textContent = isEditMode ? 'Cancel' : 'Edit';
+        }
+
+        // Save Profile Data
+        async function saveProfile() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+            const username = localStorage.getItem("facultyUsername");
+
+            if (!username) {
+                alert("Username not found! Please log in again.");
+                window.location.href = "../facultylogin.html";
+                return;
+            }
+
+            const profileData = {
+                username,
+                name,
+                email,
+                phone,
+                address,
+                profileImage: profileImageBase64,
+            };
+
+            console.log("Sending profile data:", profileData); // Debugging
+
+            try {
+                const response = await fetch("http://localhost:5500/api/faculty/profile/update", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(profileData),
+                });
+
+                const result = await response.json();
+                alert(result.message);
+
+                toggleEdit();
+            } catch (error) {
+                console.error("Error saving profile:", error);
+            }
+        }
+
+        // Fetch Profile Data from MongoDB
+        async function fetchProfile(username) {
+            try {
+                const response = await fetch(`http://localhost:5500/api/faculty/profile/${username}`);
+                if (!response.ok) throw new Error("Profile not found");
+
+                const user = await response.json();
+                localStorage.setItem("profileData", JSON.stringify(user));
+
+                document.getElementById('name').value = user.name || "";
+                document.getElementById('email').value = user.email || "";
+                document.getElementById('phone').value = user.phone || "";
+                document.getElementById('address').value = user.address || "";
+                document.getElementById('profile-pic').src = user.profileImage || "placeholder.jpg";
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            }
+        }
+
+        // Logout Function
+        function logout() {
+            localStorage.removeItem("facultyUsername");
+            localStorage.removeItem("profileData");
+            alert('Logged out!');
+            window.location.href = '../facultylogin.html';
+        }
+
+        // Event Listeners
+        document.getElementById('edit-button').onclick = toggleEdit;
+        document.getElementById('save-button').onclick = saveProfile;
+        document.getElementById('image-upload').onchange = previewImage;
+        document.querySelector('.logout').onclick = logout;
+
+        // Fetch Profile on Page Load
+        const username = localStorage.getItem("facultyUsername");
+        if (username) {
+            fetchProfile(username);
+        } else {
+            alert("No user logged in!");
+            window.location.href = "../facultylogin.html";
+        }
+    </script>
+</body>
+</html>

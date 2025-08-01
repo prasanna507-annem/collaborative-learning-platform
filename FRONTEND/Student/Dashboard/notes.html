@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes List</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    .content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header .welcome span {
+      font-weight: bold;
+    }
+
+    .header .actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header .actions .search {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 200px;
+    }
+
+    .notes {
+      padding: 20px;
+      flex-grow: 1;
+    }
+
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notes-header h1 {
+      margin: 0;
+    }
+
+    .notes-header .controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .notes-header .controls select {
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .notes-header .add-notes {
+      background-color: #f7941d;
+      color: white;
+      padding: 5px 10px;
+      text-decoration: none;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .notes-header .add-notes:hover {
+      background-color: #f7941d;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table thead {
+      background-color: #f7941d;
+      color: white;
+    }
+
+    table th, table td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    table tbody tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .fas {
+      margin-right: 25px;
+      cursor: pointer;
+    }
+
+    .fas:hover {
+      color: #f7941d;
+    }
+  </style>
+</head>
+<body>
+  <main class="content">
+    <header class="header">
+      <div class="welcome">Good Morning, <span>John Doe</span></div>
+      <div class="actions">
+        <div class="search-bar">
+          <input type="text" id="searchInput" class="search" placeholder="Search">
+        </div>
+        <i class="fas fa-user-circle"></i>
+      </div>
+    </header>
+    <section class="notes">
+      <div class="notes-header">
+        <h1>Notes List</h1>
+        <div class="controls">
+          <select id="filterDropdown">
+            <option value="">Filter by Subject</option>
+          </select>
+          <select id="sortByDropdown">
+            <option value="">Sort by</option>
+            <option value="subject">Subject</option>
+            <option value="title">Title</option>
+            <option value="date">Date</option>
+          </select>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Subject</th>
+            <th>Notes Title</th>
+            <th>Uploaded Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="notesTableBody">
+        </tbody>
+      </table> 
+    </section>
+  </main>
+  <script>
+    let allNotes = [];
+    let currentPage = 1;
+    const limit = 10;
+    let totalPages = 1;
+
+    async function fetchNotes(page = 1) {
+      const tableBody = document.getElementById('notesTableBody');
+      tableBody.innerHTML = '<tr><td colspan="5"><div class="spinner"></div></td></tr>';
+      
+      try {
+        const response = await fetch(`http://localhost:5500/notes?page=${page}&limit=${limit}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (!result.success || !Array.isArray(result.data)) {
+          throw new Error('Invalid data format from server');
+        }
+        
+        allNotes = result.data;
+        currentPage = result.pagination?.currentPage || page;
+        totalPages = result.pagination?.totalPages || 1;
+        
+        renderNotes(allNotes);
+        populateFilterDropdown();
+        updatePaginationControls();
+        
+      } catch (error) {
+        console.error('Error fetching notes:', error);
+        tableBody.innerHTML = `<tr><td colspan="5">Error loading notes: ${error.message}</td></tr>`;
+      }
+    }
+
+    function renderNotes(notes) {
+      const tableBody = document.getElementById('notesTableBody');
+      tableBody.innerHTML = '';
+
+      if (!notes || notes.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5">No notes available.</td></tr>';
+        return;
+      }
+
+      notes.forEach((note, index) => {
+        const viewLink = note.filePath 
+          ? `<a href="http://localhost:5500${note.filePath}" target="_blank"><i class="fas fa-eye"></i></a>`
+          : '';
+        
+        const downloadLink = note.filePath
+          ? `<a href="http://localhost:5500${note.filePath}" download="${note.originalFileName || 'note'}"><i class="fas fa-download"></i></a>`
+          : '';
+
+        const row = `
+          <tr>
+            <td>${(currentPage - 1) * limit + index + 1}</td>
+            <td>${note.subject || 'N/A'}</td>
+            <td>${note.title || 'N/A'}</td>
+            <td>${note.createdAt ? new Date(note.createdAt).toLocaleString() : 'N/A'}</td>
+            <td>
+              ${viewLink}
+              ${downloadLink}
+            </td>
+          </tr>
+        `;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    function populateFilterDropdown() {
+      const filterDropdown = document.getElementById('filterDropdown');
+      filterDropdown.innerHTML = '<option value="">Filter by Subject</option>';
+      
+      const subjects = [...new Set(allNotes.map(note => note.subject).filter(Boolean))];
+      subjects.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject;
+        option.textContent = subject;
+        filterDropdown.appendChild(option);
+      });
+    }
+
+    function updatePaginationControls() {
+      const paginationDiv = document.createElement('div');
+      paginationDiv.className = 'pagination';
+      paginationDiv.style.marginTop = '20px';
+      paginationDiv.style.display = 'flex';
+      paginationDiv.style.justifyContent = 'center';
+      paginationDiv.style.gap = '10px';
+      
+      if (currentPage > 1) {
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.onclick = () => fetchNotes(currentPage - 1);
+        paginationDiv.appendChild(prevButton);
+      }
+      
+      const pageInfo = document.createElement('span');
+      pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+      paginationDiv.appendChild(pageInfo);
+      
+      if (currentPage < totalPages) {
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.onclick = () => fetchNotes(currentPage + 1);
+        paginationDiv.appendChild(nextButton);
+      }
+      
+      // Remove existing pagination if any
+      const existingPagination = document.querySelector('.pagination');
+      if (existingPagination) {
+        existingPagination.remove();
+      }
+      
+      document.querySelector('.notes').appendChild(paginationDiv);
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', (event) => {
+      const searchQuery = event.target.value.toLowerCase();
+      const filteredNotes = allNotes.filter(note => 
+        (note.subject || '').toLowerCase().includes(searchQuery) || 
+        (note.title || '').toLowerCase().includes(searchQuery)
+      );
+      renderNotes(filteredNotes);
+    });
+
+    document.getElementById('filterDropdown').addEventListener('change', (event) => {
+      const selectedSubject = event.target.value;
+      const filteredNotes = selectedSubject
+        ? allNotes.filter(note => note.subject === selectedSubject)
+        : allNotes;
+      renderNotes(filteredNotes);
+    });
+
+    document.getElementById('sortByDropdown').addEventListener('change', (event) => {
+      const sortBy = event.target.value;
+      const sortedNotes = [...allNotes];
+      
+      switch (sortBy) {
+        case 'subject':
+          sortedNotes.sort((a, b) => (a.subject || '').localeCompare(b.subject || ''));
+          break;
+        case 'title':
+          sortedNotes.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+          break;
+        case 'date':
+          sortedNotes.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+          break;
+      }
+      
+      renderNotes(sortedNotes);
+    });
+
+    // Initial fetch
+    fetchNotes();
+  </script>
+</body>
+</html>

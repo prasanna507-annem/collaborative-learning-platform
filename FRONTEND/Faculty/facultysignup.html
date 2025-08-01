@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffffff;
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            max-width: 1200px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .left-section {
+            flex: 1;
+            background-color: #fef6e4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .left-section img {
+            max-width: 80%;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .logo span {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .right-section {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #f5a623;
+        }
+
+        .right-section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        form{
+            border: 1px solid black;
+            background-color: #ffffff;
+            border-radius: 2%;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .signup-btn {
+            width: 100%;
+            background-color: #f5a623;
+            color: #fff;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .signup-btn:hover {
+            background-color: #e5941e;
+        }
+
+        .social-login {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+
+        .social-login button {
+            background-color: #fff8e1;
+            border: 1px solid #f5a623;
+            color: #f5a623;
+            padding: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .social-login button:hover {
+            background-color: #f5a623;
+            color: #fff;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .login-link a {
+            color: #f5a623;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="left-section">
+            <div class="logo">
+                <img src="images/logo.png" alt="Logo">
+                
+            </div>
+            <img src="images/signup.png" alt="Signup Illustration">
+        </div>
+        <div class="right-section">
+           
+            <form id="facultySignupForm">
+                 <h2>Sign Up</h2>
+                 <h3>Sign up as a Faculty</h3>
+                <div class="form-group">
+                    <label for="name">name*</label>
+                    <input type="text" id="name" placeholder="Enter full name" required name="name">
+                </div>
+                <div class="form-group">
+                    <label for="email">username*</label>
+                    <input type="text" id="username" placeholder="Enter username" required name="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">password</label>
+                    <input type="password" id="password" placeholder="Enter password" required name="password">
+                </div>
+                
+                <button class="signup-btn" type="submit">Sign Up</button>
+                
+                <div class="login-link">
+                    Already have an account? <a href="facultylogin.html">Login</a>
+                </div>
+                <div id="responseMessage"></div>
+
+            </form>
+        </div>
+    </div>
+    
+    
+    <script>
+        const studentSignupForm = document.getElementById('facultySignupForm');
+        studentSignupForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+    
+            const name = document.getElementById('name').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const responseMessage = document.getElementById('responseMessage');
+    
+            try {
+                const response = await fetch('http://localhost:5500/api/users/faculty/signup', {  // Update the URL here
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, username, password }),
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    responseMessage.textContent = 'Faculty registered successfully!';
+                    responseMessage.style.color = 'green';
+                    setTimeout(() => {
+                    window.location.href = './facultylogin.html';
+                }, 1000);
+                } else {
+                    responseMessage.textContent = data.msg || 'Error during registration';
+                    responseMessage.style.color = 'red';
+                }
+            } catch (err) {
+                responseMessage.textContent = 'Server error. Please try again later.';
+                responseMessage.style.color = 'red';
+            }
+        });
+    </script>
+    
+</body>
+</html>

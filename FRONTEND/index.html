@@ -1,0 +1,596 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Learning Platform</title>
+    <link rel="stylesheet" href="home.php">
+    <style>
+        /* General Reset */
+body, h1, h2, h3, p, ul, li, a, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    line-height: 1.6;
+    color: #333;
+    background: #f4f4f4;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header {
+    background: #002a5a;
+    color: #fff;
+    padding: 1rem 0;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #f7941d;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.navbar ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.login-options button {
+    background: #f7941d;
+    border: none;
+    color: #002a5a;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+.dropdown { 
+    position: relative; 
+    display: inline-block;
+ } 
+    .dropdown-content { 
+        display: none; 
+        position: absolute; 
+        background-color: #f9f9f9; 
+        min-width: 160px; 
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+        z-index: 1; 
+        } .dropdown-content a 
+        { color: black; 
+        padding: 12px 16px; 
+        text-decoration: none; 
+        display: block; 
+        } .dropdown-content a:hover { 
+            background-color: #f7941d; 
+            } .dropdown:hover .dropdown-content {
+                 display: block; 
+                 } .login-button { 
+                    background-color: #f7941d;
+                     /* Green */ color: white; 
+                     padding: 16px; 
+                     font-size: 16px; border: none; 
+                     cursor: pointer; 
+                     } .login-button:hover {
+                         background-color: #f7941d;
+                          } 
+
+/* Hero Section */
+.hero {
+    background: #002a5a;
+    color: #fff;
+    padding: 3rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-text h2 span {
+    color: #f7941d;
+}
+
+.hero-text button {
+    background: #f7941d;
+    color: #002a5a;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    cursor: pointer;
+}
+
+.hero-image img {
+    max-width: 100%;
+    float: right;
+    width: 500px;
+    height: 500px;
+}
+
+/* Features Section */
+.features {
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.features h2 span {
+    color: #f7941d;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 features per row */
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+
+.feature {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* How It Works */
+.how-it-works {
+    background: #002a5a;
+    color: #fff;
+    padding: 3rem 0;
+    text-align: center;
+}
+.container { display: flex; 
+    align-items: center; 
+    justify-content: space-around; 
+    width: 100%; 
+    margin-top: 20px; 
+} .circle { 
+    width: 100px; 
+    height: 100px; 
+    background-color: #f7941d; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 16px; color: black; 
+    text-align: center; 
+} .connector { 
+    width: 50px; /* Adjust the width based on your image size */ 
+    height: auto; 
+    margin: 0 10px; /* Space between circle and connector */ 
+}
+
+.steps {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    color: #f7941d;
+}
+
+/* Contact Section */
+.contact {
+    padding: 2rem 0; /* Reduced padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.contact-form {
+    width: 50%; /* Adjust width as needed */
+}
+
+.contact-form form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form form input,
+.contact-form form textarea,
+.contact-form form button {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.contact-form form button {
+    background: #f7941d;
+    color: #002a5a;
+    border: none;
+    cursor: pointer;
+}
+
+/* Testimonials */
+.testimonials {
+    background: #f4f4f4;
+    padding: 3rem 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.testimonials h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+    width: 100%;
+    display: block; /* Ensure it takes full width as a single row */
+}
+
+/* Wrapper to contain scrolling feedback */
+.testimonials-wrapper {
+    width: 100%;
+    overflow: hidden; /* Hide scrollbar */
+    position: relative;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center; /* Ensures feedbacks are in one row */
+}
+
+/* Scrollable feedback row */
+.testimonials-grid {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    animation: scroll 10s linear infinite; /* Auto-scroll effect */
+    white-space: nowrap; /* Ensures items remain in a single row */
+}
+
+/* Individual Testimonial Styling */
+.testimonial {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 280px; /* Set width for uniformity */
+    text-align: center;
+    flex: 0 0 auto; /* Prevents shrinking */
+    display: inline-block; /* Keeps items in a row */
+}
+
+.testimonial img {
+    max-width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+/* Scrolling Animation */
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Responsive Fix */
+@media (max-width: 768px) {
+    .testimonials-grid {
+        animation-duration: 15s; /* Slower scroll on smaller screens */
+    }
+}
+
+
+/* Footer */
+.footer {
+    background: #080808;
+    color: #8d8a8a;
+    padding: 1rem 0;
+    text-align: center;
+}
+logins {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: #f7941d;
+    padding: 15px;
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+
+        logins a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        logins a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Logo">
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="Aboutus.html">About Us</a></li>
+                    <li><a href="#contactus">Contact Us</a></li>
+                </ul>
+            </nav>
+            <div class="dropdown"> 
+                <button class="login-button">Login As</button> 
+                <div class="dropdown-content"> 
+                    <a href="Student/studentlogin.html">Student</a> 
+                    <a href="Faculty/facultylogin.html">Faculty</a> 
+                    <a href="Admin/adminlogin.html">Admin</a> 
+                </div> 
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-text">
+                <h2>Collaborative <span>learning</span> platform.</h2>
+                <p>Empower learners and educators with a collaborative platform </p>
+                    <p>that fosters interaction, shared knowledge, and growth</p> 
+                    <p>through real-time collaboration, peer discussions, and </p>
+                    <p>personalized learning paths."</p>
+                <button> Know more</button>
+            </div>
+            <div class="hero-image">
+                <img src="images/home.png" alt="Hero Image">
+            </div>
+        </div>
+    </section>
+    <logins>
+        <a href="Admin/adminlogin.html">Admin Login</a> |
+        <a href="Faculty/facultylogin.html">Faculty Login</a> |
+        <a href="Student/studentlogin.html">Student Login</a>
+    </logins>
+
+    <section class="features">
+        <h2>Our Key <span>Features</span></h2>
+
+        <div class="container">
+            <div class="features-grid" id="features">
+                <div class="feature">
+                    <img src="images/authentication.png" alt="logo" width="24px" height="25px">
+                    <h3>Authentication</h3>
+                    <p>Offers secure login with password protection, multi-factor authentication, and account recovery.</p>
+                </div>
+                <div class="feature">
+                    <img src="images/authentication.png" alt="logo" width="24px" height="25px">
+
+                    <h3>Multiple User Access</h3>
+                    <p>Allows simultaneous access for multiple users with role-based permissions and real-time activity tracking.</p>
+                </div>
+                <div class="feature">
+                    <img src="images/upload.png" alt="logo" width="24px" height="25px">
+
+                    <h3>Notes Upload</h3>
+                    <p>Enables users to upload, organize, and share notes efficiently with tagging and folder management.</p>
+                </div>
+                <div class="feature">
+                    <img src="images/download.png" alt="logo" width="24px" height="25px">
+
+                    <h3>Notes Download</h3>
+                    <p>Allows users to download notes as review formats for offline access, ensuring knowledge is preserved.</p>
+                </div>
+                <div class="feature">
+                    <img src="images/discussion.png" alt="logo" width="24px" height="25px">
+
+                    <h3>Discussion</h3>
+                    <p>Offers a collaborative space for threaded discussions, updates, and category-based organization.</p>
+                </div>
+                <div class="feature">
+                    <img src="images/feedback.png" alt="logo" width="24px" height="25px">
+
+                    <h3>Feedback</h3>
+                    <p>Allows users to provide or receive constructive feedback on features to help improve the platform.</p>
+                </div>
+                <div class="feature">
+                    <img src="images/adminfeatures.png" alt="logo" width="24px" height="25px">
+
+                    <h3>Admin Features</h3>
+                    <p>Provides tools for user management, content moderation, and analytics to monitor platform performance.</p>
+                </div>
+                <div class="feature">
+                    <img src="images/search.png" alt="logo" width="24px" height="25px">
+
+                    <h3>Search and Filter</h3>
+                    <p>Enables powerful search tools using keyword search, filters, and tagging for quick retrieval.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <H1>How it works</H1> 
+
+        <div class="container">
+            <div class="circle">Login</div> 
+            <img src="images/lines.png" alt="Connector" class="connector"> 
+            <div class="circle">Profile Setup</div> 
+            <img src="images/lines.png" alt="Connector" class="connector">
+             <div class="circle">Notes</div> 
+             <img src="images/lines.png" alt="Connector" class="connector">
+              <div class="circle">Access</div>
+    </section>
+
+    <section class="contact">
+        <div class="container">
+            <div class="contact-info">
+                <img src="images/contactus.png" alt="Contact Image" width="400px" height="400px">
+            </div>
+            <div class="contact-form">
+                <h2 id="contactus"> Get in Touch With Us</h2>
+                <form id="contactForm">
+                    <input type="text" id="name" placeholder="Enter Full Name" required>
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="tel" id="phone" placeholder="Phone Number" required>
+                    <textarea id="message" placeholder="Enter Message" required></textarea>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+        
+
+    <section class="testimonials">
+        <h2 style="text-align: center;">What people think about us</h2>
+
+        <div class="container">
+            <div class="testimonials-grid">
+                <!-- Feedback will be inserted here dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <div class="logo-icon">
+                    <img src="images/logo.png" alt="logo" float="left">
+                </div>
+                <div class="logo-text">
+
+                    <p>The Collab Notes Management System is a collaborative platform designed to streamline note-taking and team coordination. It enables users to create, organize, and share notes in real-time, fostering seamless collaboration and improved productivity.</p>
+                </div>
+            </div>
+            <div class="footer-links">
+                <ul>
+                    <li><a href="Aboutus.html">About us</a></li>
+                    <li><a href="#features.html">Features</a></li>
+                    <li><a href="#contactus">contact us</a></li>
+
+                </ul>
+            </div>
+           
+            <div class="footer-social">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com"><img src="images/facebook.png" alt="Facebook" width="24px" height="25px"></a>
+                    <a href="https://www.instagram.com"><img src="images/instagram.png" alt="Instagram" width="24px" height="25px"></a>
+                    <a href="https://www.github.com"><img src="images/git.png" alt="GitHub" width="24px" height="25px"></a>
+                    <a href="https://www.telegram.com"><img src="images/telegram.png" alt="Telegram" width="24px" height="25px"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 All Rights Reserved</p>
+        </div>
+    </footer>
+
+
+    
+    <script src="home.js"></script>
+    
+    <script>
+        // Form submission event listener
+        document.getElementById('contactForm').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Prevent default form submission
+    
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+    
+            // Send data to backend
+            try {
+                const response = await fetch('http://localhost:5500/api/contactus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        message: message,
+                    }),
+                });
+    
+                // Check if the response is successful
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('Message sent successfully!');
+                    document.getElementById('contactForm').reset(); // Reset the form
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error submitting the form.');
+            }
+        });
+    </script>
+    <script>
+       document.addEventListener("DOMContentLoaded", async () => {
+    const testimonialsGrid = document.querySelector(".testimonials-grid");
+
+    try {
+        const response = await fetch("http://localhost:5500/api/feedback"); 
+        const feedbacks = await response.json();
+
+        console.log("Fetched feedbacks:", feedbacks); // Debugging line
+
+        testimonialsGrid.innerHTML = ""; 
+
+        feedbacks.forEach(feedback => {
+            const testimonialDiv = document.createElement("div");
+            testimonialDiv.classList.add("testimonial");
+
+            const img = document.createElement("img");
+            img.src = "https://via.placeholder.com/80"; 
+            img.alt = feedback.userName || "User";
+
+            const feedbackText = document.createElement("p");
+            feedbackText.textContent = feedback.userFeedback || "No feedback provided.";
+
+            const userInfo = document.createElement("p");
+            userInfo.innerHTML = `<strong>${feedback.userName || "Anonymous"}</strong> - ${feedback.userType || "User"}`;
+
+            const rating = feedback.rating || 0;
+            const ratingStars = document.createElement("p");
+            ratingStars.innerHTML = "⭐".repeat(rating) + "☆".repeat(5 - rating);
+
+            testimonialDiv.appendChild(img);
+            testimonialDiv.appendChild(feedbackText);
+            testimonialDiv.appendChild(ratingStars);
+            testimonialDiv.appendChild(userInfo);
+
+            testimonialsGrid.appendChild(testimonialDiv);
+        });
+    } catch (error) {
+        console.error("Error fetching feedback:", error);
+    }
+});
+
+
+    </script>
+
+
+</body>
+</html>

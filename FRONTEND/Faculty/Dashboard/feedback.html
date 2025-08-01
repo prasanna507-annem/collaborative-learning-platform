@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f9f5f1;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 70%; /* Reduced width for the entire container */
+            max-width: 800px;
+            height: 80%; /* Ensure height consistency */
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .illustration, .form-section {
+            flex: 1; /* Equal size for both containers */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative; /* Added for logo positioning */
+        }
+
+        .illustration {
+            background-color: #f7941d;
+        }
+
+        .illustration img {
+            max-width: 80%;
+            height: auto;
+        }
+
+        .logo {
+            position: absolute; /* Position the logo absolutely */
+            top: 1rem; /* Distance from the top */
+            left: 1rem; /* Distance from the left */
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .logo span {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .form-section {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .form-section h1 {
+            margin-bottom: 20px;
+            color: #f7941d;
+        }
+
+        .form-group {
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-group .rating {
+            display: flex;
+            direction: rtl;
+            justify-content: flex-start;
+            font-size: 2rem;
+        }
+
+        .form-group .rating input {
+            display: none;
+        }
+
+        .form-group .rating label {
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .form-group .rating input:checked ~ label,
+        .form-group .rating input:checked ~ label ~ label {
+            color: #f7941d;
+        }
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        #dropdown-btn {
+            width: 100%;
+            padding: 8px;
+            color: #ccc;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            width: 100%;
+            z-index: 10;
+            padding: 10px;
+        }
+
+        .dropdown-content input {
+            margin-right: 5px;
+        }
+    
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #f7941d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-group button:hover {
+            background-color: #f7941d;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .footer a {
+            color: #f7b718;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="illustration">
+            <div class="logo">
+                <img src="images/Group 15.png" alt="Logo">
+                <span></span>
+            </div>
+            <img src="images/feedbackimage.jpg" alt="Illustration">
+        </div>
+        <div class="form-section">
+            <h1>Feedback Form</h1>
+            <form id="feedback-form">
+                <div class="form-group">
+                    <label for="user-name">Name</label>
+                    <input type="text" id="user-name" name="userName" placeholder="Enter your full name" required>
+                </div>
+
+                <!-- Expandable User Type Selection -->
+                <div class="form-group">
+                    <label>User Type</label>
+                    <div class="dropdown">
+                        <button type="button" id="dropdown-btn">Select User Type</button>
+                        <div class="dropdown-content" id="dropdown-options">
+                            <input type="radio" id="student" name="userType" value="Student">
+                            <label for="student">Student</label><br>
+
+                            <input type="radio" id="faculty" name="userType" value="Faculty">
+                            <label for="faculty">Faculty</label>
+                        </div>
+                    </div>
+                    <p id="selected-user-type" style="margin-top: 5px; font-weight: bold;"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-feedback">Feedback</label>
+                    <textarea id="user-feedback" name="userFeedback" rows="4" placeholder="Write your feedback here..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Rate Us</label>
+                    <div class="rating">
+                        <input type="radio" id="star5" name="rating" value="5" required><label for="star5" title="5 stars">&#9733;</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars">&#9733;</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars">&#9733;</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars">&#9733;</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star">&#9733;</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+            
+            <div class="footer">
+                Already submitted feedback? <a href="#">View Responses</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const feedbackForm = document.getElementById('feedback-form');
+            const dropdownBtn = document.getElementById('dropdown-btn');
+            const dropdownOptions = document.getElementById('dropdown-options');
+            const selectedUserType = document.getElementById('selected-user-type');
+
+            // Toggle dropdown visibility
+            dropdownBtn.addEventListener('click', () => {
+                dropdownOptions.style.display = dropdownOptions.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Select User Type and close dropdown
+            dropdownOptions.addEventListener('click', (event) => {
+                if (event.target.name === "userType") {
+                    selectedUserType.textContent = `Selected: ${event.target.value}`;
+                    dropdownBtn.textContent = event.target.value; // Change button text
+                    dropdownOptions.style.display = 'none'; // Hide dropdown
+                }
+            });
+
+            feedbackForm.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Prevent default form submission
+
+                const userName = document.getElementById('user-name').value.trim();
+                const userType = document.querySelector('input[name="userType"]:checked')?.value;
+                const userFeedback = document.getElementById('user-feedback').value.trim();
+                const rating = document.querySelector('input[name="rating"]:checked')?.value;
+
+                if (!userName || !userType || !userFeedback || !rating) {
+                    alert('Please fill in all fields and provide a rating.');
+                    return;
+                }
+
+                const feedbackData = {
+                    userName,
+                    userType,
+                    userFeedback,
+                    rating
+                };
+
+                try {
+                    const response = await fetch('http://localhost:5500/api/feedback', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(feedbackData),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        alert('Feedback submitted successfully!');
+                        feedbackForm.reset(); // Reset form fields
+                        selectedUserType.textContent = ''; // Reset selected user type
+                        dropdownBtn.textContent = 'Select User Type'; // Reset button text
+                    } else {
+                        alert(data.message || data.error || 'Failed to submit feedback');
+                    }
+                } catch (error) {
+                    console.error('Error during feedback submission:', error);
+                    alert('Server error. Please try again later.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

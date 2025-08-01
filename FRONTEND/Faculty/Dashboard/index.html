@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f7941d;
+            color: white;
+            padding: 20px;
+            border-right: 2px solid #e0e0e0;
+        }
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 20px;
+        }
+        .sidebar nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar nav ul li a img {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .main-content header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .main-content header h2 {
+            margin: 0;
+        }
+        .main-content .feedback-button a {
+            text-decoration: none;
+            color: #f7941d;
+            font-size: 16px;
+            border: 2px solid #f7941d;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+        #content {
+            margin-top: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="images/Group 15.png" alt="Logo">
+                <h2>Faculty Dashboard</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="loadContent('dashboard.html')"><img src="images/Dashboard.png" alt="Dashboard Icon"> Dashboard</a></li>
+                    <li><a href="#" onclick="loadContent('notes.html')"><img src="images/tabler_notes.png" alt="Notes Icon"> Notes</a></li>
+                    <li><a href="#" onclick="loadContent('discussion.html')"><img src="images/notes.png" alt="Discussion Icon"> Discussion</a></li>
+                    <li><a href="#" onclick="loadContent('profile.html')"><img src="images/profile.png" alt="Profile Icon"> Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header>
+                <h2>Welcome, <span id="facultyName"></span></h2>
+                <div class="feedback-button">
+                    <a href="feedback.html" >Feedback</a>
+                </div>
+            </header>
+            <div id="content">
+                <h3>Welcome</h3>
+                <p>Select an option from the menu to get started.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch and display faculty's name from localStorage
+        const facultyName = localStorage.getItem("facultyName");
+        if (facultyName) {
+            document.getElementById("facultyName").textContent = facultyName;
+        } else {
+            window.location.href = "../facultylogin.html";
+        }
+
+        function loadContent(page) {
+            fetch(page)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    // Load the body content
+                    document.getElementById("content").innerHTML = doc.body.innerHTML;
+
+                    // Remove previously added dynamic styles
+                    document.querySelectorAll('style[data-dynamic]').forEach(style => style.remove());
+
+                    // Extract and apply styles from the loaded page
+                    doc.head.querySelectorAll('style').forEach(style => {
+                        const newStyle = document.createElement("style");
+                        newStyle.innerHTML = style.innerHTML;
+                        newStyle.setAttribute("data-dynamic", "true");
+                        document.head.appendChild(newStyle);
+                    });
+
+                    // Remove previously added scripts
+                    document.querySelectorAll('script[data-dynamic]').forEach(script => script.remove());
+
+                    // Load and execute scripts from the loaded page
+                    doc.querySelectorAll('script').forEach(script => {
+                        const newScript = document.createElement('script');
+                        if (script.src) {
+                            newScript.src = script.src;
+                        } else {
+                            newScript.textContent = script.textContent;
+                        }
+                        newScript.setAttribute("data-dynamic", "true");
+                        document.body.appendChild(newScript);
+                    });
+
+                    // Initialize page-specific functionality
+                    if (page === "profile.html" && typeof initializeProfile === "function") {
+                        initializeProfile();
+                    }
+                    // No need for dashboard initialization here as it's handled in dashboard.html
+                })
+                .catch(error => {
+                    console.error("Error loading content:", error);
+                    document.getElementById("content").innerHTML = `<p>Error loading content: ${error.message}</p>`;
+                });
+        }
+
+        // Function to initialize profile scripts (unchanged)
+        function initializeProfile() {
+            let isEditMode = false;
+            let profileImageBase64 = "";
+
+            function previewImage(event) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    document.getElementById("profile-pic").src = reader.result;
+                    profileImageBase64 = reader.result;
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+
+            function toggleEdit() {
+                isEditMode = !isEditMode;
+                document.querySelectorAll(".profile-info input").forEach((input) => {
+                    input.disabled = !isEditMode;
+                });
+                document.getElementById("image-upload").disabled = !isEditMode;
+                document.getElementById("save-button").style.display = isEditMode ? "block" : "none";
+                document.getElementById("edit-button").textContent = isEditMode ? "Cancel" : "Edit";
+            }
+
+            async function saveProfile() {
+                const name = document.getElementById("name").value;
+                const email = document.getElementById("email").value;
+                const phone = document.getElementById("phone").value;
+                const address = document.getElementById("address").value;
+                const username = localStorage.getItem("facultyUsername");
+
+                if (!username) {
+                    alert("Username not found! Please log in again.");
+                    window.location.href = "../facultylogin.html";
+                    return;
+                }
+
+                const profileData = {
+                    username,
+                    name,
+                    email,
+                    phone,
+                    address,
+                    profileImage: profileImageBase64,
+                };
+
+                try {
+                    const response = await fetch("http://localhost:5500/api/faculty/profile/update", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(profileData),
+                    });
+                    const result = await response.json();
+                    alert(result.message);
+                    toggleEdit();
+                } catch (error) {
+                    console.error("Error saving profile:", error);
+                }
+            }
+
+            async function fetchProfile() {
+                const username = localStorage.getItem("facultyUsername");
+                if (!username) {
+                    alert("No user logged in! Redirecting to login page.");
+                    window.location.href = "../facultylogin.html";
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`http://localhost:5500/api/faculty/profile/${username}`);
+                    if (!response.ok) throw new Error("Profile not found");
+                    const user = await response.json();
+                    localStorage.setItem("profileData", JSON.stringify(user));
+                    document.getElementById("name").value = user.name || "";
+                    document.getElementById("email").value = user.email || "";
+                    document.getElementById("phone").value = user.phone || "";
+                    document.getElementById("address").value = user.address || "";
+                    document.getElementById("profile-pic").src = user.profileImage || "placeholder.jpg";
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                }
+            }
+
+            function logout() {
+                localStorage.removeItem("facultyName");
+                localStorage.removeItem("facultyUsername");
+                localStorage.removeItem("profileData");
+                alert("Logged out!");
+                window.location.href = "../facultylogin.html";
+            }
+
+            if (document.getElementById("edit-button")) {
+                document.getElementById("edit-button").onclick = toggleEdit;
+            }
+            if (document.getElementById("save-button")) {
+                document.getElementById("save-button").onclick = saveProfile;
+            }
+            if (document.getElementById("image-upload")) {
+                document.getElementById("image-upload").onchange = previewImage;
+            }
+            if (document.querySelector(".logout")) {
+                document.querySelector(".logout").onclick = logout;
+            }
+
+            const username = localStorage.getItem("facultyUsername");
+            if (username) {
+                fetchProfile(username);
+            } else {
+                alert("No user logged in!");
+                window.location.href = "../facultylogin.html";
+            }
+        }
+    </script>
+</body>
+</html>

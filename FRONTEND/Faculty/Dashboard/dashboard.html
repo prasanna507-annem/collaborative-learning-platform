@@ -1,0 +1,118 @@
+<div class="dashboard-container">
+    <h1>Dashboard</h1>
+    <div class="cards" id="dashboardCards">
+        <!-- Cards will be populated dynamically -->
+    </div>
+</div>
+
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        text-align: center;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .cards {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        width: 250px;
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card.all-notes {
+        background-color: #f7941d;
+        color: white;
+    }
+
+    .card.total-students {
+        background-color: #f7941d;
+        color: white;
+    }
+
+    .card h2 {
+        margin: 10px 0;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .card p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+
+    .card i {
+        font-size: 40px;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
+</style>
+
+<script>
+    async function fetchDashboardData() {
+        try {
+            console.log("Fetching dashboard data...");
+            const [notesResponse, studentsResponse] = await Promise.all([
+                fetch('http://localhost:5500/notes/count'),
+                fetch('http://localhost:5500/api/student/count')
+            ]);
+
+            if (!notesResponse.ok || !studentsResponse.ok) {
+                throw new Error(`HTTP error! Notes: ${notesResponse.status}, Students: ${studentsResponse.status}`);
+            }
+
+            const notesData = await notesResponse.json();
+            const studentsData = await studentsResponse.json();
+
+            const { totalNotes } = notesData;
+            const { totalStudents } = studentsData;
+
+            const cardsContainer = document.getElementById('dashboardCards');
+            cardsContainer.innerHTML = `
+                <div class="card all-notes">
+                    <i class="fas fa-file-alt"></i>
+                    <h2>${totalNotes || 0}</h2>
+                    <p>ALL NOTES</p>
+                </div>
+                <div class="card total-students">
+                    <i class="fas fa-users"></i>
+                    <h2>${totalStudents || 0}</h2>
+                    <p>TOTAL STUDENTS</p>
+                </div>
+            `;
+        } catch (error) {
+            console.error('Error fetching dashboard data:', error);
+            document.getElementById('dashboardCards').innerHTML = `<p>Error loading dashboard data: ${error.message}</p>`;
+        }
+    }
+
+    // Load data when the page loads
+    fetchDashboardData();
+</script>

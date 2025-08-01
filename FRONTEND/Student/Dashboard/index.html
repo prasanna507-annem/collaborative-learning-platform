@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f7941d;
+            color: white;
+            padding: 20px;
+            border-right: 2px solid #e0e0e0;
+        }
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sidebar nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 20px;
+        }
+        .sidebar nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar nav ul li a img {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .main-content header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .main-content header h2 {
+            margin: 0;
+        }
+        .main-content .feedback-button a {
+            text-decoration: none;
+            color: #f7941d;
+            font-size: 16px;
+            border: 2px solid #f7941d;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+        #content {
+            margin-top: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="images/Group 15.png" alt="Logo">
+                <h2>Student Dashboard</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="loadContent('notes.html')"><img src="images/tabler_notes.png" alt="Notes Icon"> Notes</a></li>
+                    <li><a href="#" onclick="loadContent('discussion.html')"><img src="images/notes.png" alt="Discussion Icon"> Discussion</a></li>
+                    <li><a href="#" onclick="loadContent('profile.html')"><img src="images/profile.png" alt="Profile Icon"> Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <header>
+                <h2>Welcome, <span id="studentName"></span></h2>
+                <div class="feedback-button">
+                    <a href="feedback.html">Feedback</a>
+                </div>
+            </header>
+            <div id="content">
+                <h3>Welcome</h3>
+                <p>Select an option from the menu to get started.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check login status
+        const token = localStorage.getItem("token");
+        const studentName = localStorage.getItem("studentName");
+        if (!token || !studentName) {
+            alert("You are not logged in. Redirecting to login page...");
+            window.location.href = "../studentlogin.html";
+        } else {
+            document.getElementById("studentName").textContent = studentName;
+        }
+
+        // Load content dynamically
+        function loadContent(page) {
+            event.preventDefault(); // Prevent default link behavior
+            console.log(`Loading page: ${page}`);
+
+            // Clear existing content
+            document.getElementById("content").innerHTML = "";
+
+            fetch(page)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${page}: ${response.statusText}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    console.log(`Successfully loaded ${page}`);
+
+                    // Parse the HTML content
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    // Inject the body content
+                    document.getElementById("content").innerHTML = doc.body.innerHTML;
+
+                    // Remove previously added dynamic styles
+                    document.querySelectorAll('style[data-dynamic]').forEach(style => style.remove());
+
+                    // Extract and apply styles from the loaded page
+                    doc.head.querySelectorAll('style').forEach(style => {
+                        const newStyle = document.createElement("style");
+                        newStyle.innerHTML = style.innerHTML;
+                        newStyle.setAttribute("data-dynamic", "true"); // Mark as dynamic
+                        document.head.appendChild(newStyle);
+                    });
+
+                    // Remove previously added scripts
+                    document.querySelectorAll('script[data-dynamic]').forEach(script => script.remove());
+
+                    // Load and execute scripts from the loaded page
+                    doc.querySelectorAll('script').forEach(script => {
+                        if (script.src) {
+                            // For external script files
+                            const newScript = document.createElement('script');
+                            newScript.src = script.src;
+                            newScript.setAttribute("data-dynamic", "true");
+                            document.body.appendChild(newScript);
+                        } else {
+                            // For inline scripts
+                            const newScript = document.createElement('script');
+                            newScript.textContent = script.textContent;
+                            newScript.setAttribute("data-dynamic", "true");
+                            document.body.appendChild(newScript);
+                        }
+                    });
+
+                    // Initialize specific page functionality if needed
+                    if (page === "profile.html" && typeof initializeProfile === "function") {
+                        initializeProfile();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error loading content:", error);
+                    document.getElementById("content").innerHTML = `<p>Failed to load ${page}. Please try again.</p>`;
+                });
+        }
+    </script>
+</body>
+</html>

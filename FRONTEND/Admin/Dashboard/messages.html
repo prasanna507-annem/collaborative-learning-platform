@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .messages-container {
+            width: 80%;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .messages-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .messages-container a {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f7941d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .messages-container a:hover {
+            text-decoration: underline;
+        }
+
+        .message-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .message-item:last-child {
+            border-bottom: none;
+        }
+
+        .message-item h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .message-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .message-item .info-label {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="messages-container">
+        <h1>Contact Messages</h1>
+        <a href="#" id="messages-link">Load Messages</a>
+        <div id="messages-list">
+            <!-- Messages will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Fetch messages from the backend API
+        async function fetchMessages() {
+            try {
+                console.log('Fetching messages...');
+                const response = await fetch("http://localhost:5500/api/contactus", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const messages = await response.json();
+                console.log('Messages received:', messages);
+                displayMessages(messages);
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+                document.getElementById('messages-list').innerHTML = `<p>Error loading messages: ${error.message}</p>`;
+            }
+        }
+
+        // Display messages on the page
+        function displayMessages(messages) {
+            const messagesList = document.getElementById('messages-list');
+            messagesList.innerHTML = ''; // Clear existing content
+
+            if (!messages || messages.length === 0) {
+                messagesList.innerHTML = `<p>No messages found.</p>`;
+                return;
+            }
+
+            messages.forEach(message => {
+                const messageItem = document.createElement('div');
+                messageItem.classList.add('message-item');
+
+                messageItem.innerHTML = `
+                    <h3>${message.name || 'Anonymous'}</h3>
+                    <p><span class="info-label">Email:</span> ${message.email || 'N/A'}</p>
+                    <p><span class="info-label">Phone:</span> ${message.phone || 'N/A'}</p>
+                    <p><span class="info-label">Message:</span> ${message.message || 'No message provided.'}</p>
+                `;
+
+                messagesList.appendChild(messageItem);
+            });
+        }
+
+        // Fetch messages when the link is clicked
+        document.getElementById("messages-link").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            fetchMessages();
+        });
+
+        // Optionally load messages on page load
+        // fetchMessages();
+    </script>
+</body>
+</html>

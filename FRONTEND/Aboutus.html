@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f7941d;
+            padding: 1rem 2rem;
+        }
+
+        .logo img {
+            max-height: 40px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        /* About Us Section */
+        .about {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .about h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .about p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #555;
+        }
+
+        /* Team Members */
+        .team {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 3rem 2rem;
+        }
+
+        .team-member {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 250px;
+        }
+
+        .team-member img {
+            width: 100%;
+            border-radius: 50%; /* Circular images as in the screenshot */
+            background-color: #e0e0e0; /* Placeholder background color */
+        }
+
+        .team-member h3 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .team-member p {
+            font-size: 1rem;
+            color: #777;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .team {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .header h1 {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header with Logo and Centered Title -->
+    <header class="header">
+        <div class="logo">
+            
+            <img src="images/Group 15.png" alt="Company Logo">
+            
+        </div>
+        <h1>About Us</h1>
+        <div class="logo" style="visibility: hidden;">
+            <!-- Invisible placeholder to balance the layout -->
+            <img src="images/Group 15.png" alt="Company Logo">
+        </div>
+    </header>
+
+    <!-- About Us Content -->
+    <section class="about">
+        <h1>A small intro of our Team</h1>
+        <p>We're a dedicated team of four from VVIT, working together to develop an end-to-end Collaborative Learning Platform 
+            for seamless academic resource sharing. As developers, designers, and creators, we’re passionate about building a 
+            user-friendly and impactful system. Our goal is to enhance collaboration among students and faculty, making 
+            learning more accessible and efficient. 
+            We've worked hard to create something meaningful, and we're excited to bring this vision to life!</p>
+    </section>
+
+    <!-- Team Members -->
+    <section class="team">
+        <div class="team-member">
+            <img src="images/women2.jpeg" alt="Member 1">
+            <h3>A Prasanna</h3>
+            <p>22BQ1A0507</p>
+        </div>
+        <div class="team-member">
+            <img src="images/women.jpeg" alt="Member 2">
+            <h3>CH.Ankitha</h3>
+            <p>22BQ1A0536</p>
+        </div>
+        <div class="team-member">
+            <img src="images/men.jpeg" alt="Member 3">
+            <h3>B.Vinod</h3>
+            <p>22BQ1A0527</p>
+        </div>
+        <div class="team-member">
+            <img src="images/men1.jpeg" alt="Member 4">
+            <h3>CH.Harsha</h3>
+            <p>23BQ5A0526</p>
+        </div>
+    </section>
+
+</body>
+</html>
